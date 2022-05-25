@@ -13,9 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Score.associate = function(models) {
     
-    Score.hasOne(models.User, {
-      foreignKey: 'user_id'
-    });
+    Score.belongsTo(models.User)
 
   };
 
@@ -26,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     if (this.User) {
       user = this.User.getResource();
     }
-
     return {
       type: 'scores',
       id: this.id,

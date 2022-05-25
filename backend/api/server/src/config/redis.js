@@ -1,7 +1,6 @@
 
-import { createClient } from 'redis';
-
-
+// import { createClient } from 'redis';
+const createClient = require('redis').createClient
 require('dotenv').config();
 
 const client = createClient({
@@ -12,6 +11,9 @@ const client = createClient({
     client.on("connect", function() {
         console.log("Connection Successful!!");
     });
+
+    client.on('error', (err) => console.log('Redis Client Error', err));
+
 
     
 
