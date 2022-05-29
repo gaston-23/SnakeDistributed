@@ -4,7 +4,7 @@ import { createClient } from 'redis';
 require('dotenv').config();
 
 const client = createClient({
-        host: process.env.REDIS_PATH, 
+        url: process.env.REDIS_PATH, 
         port: process.env.REDIS_PORT,
     });
 
