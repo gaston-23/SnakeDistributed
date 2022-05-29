@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flappy-bird-backend
+  labels:
+    app: flappy-bird-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flappy-bird-backend
+  template:
+    metadata:
+      labels:
+        app: flappy-bird-backend
+    spec:
+      containers:
+      - name: flappy-bird-backend
+        image: juanma1223/flappy-bird-backend:0.61
+        ports:
+        - containerPort: 5000
