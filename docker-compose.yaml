@@ -2,6 +2,9 @@ services:
   snake-backend:
     build: backend/
     network_mode: "host"
+  snake-frontend:
+    build: frontend/snake_front
+    network_mode: "host" 
   redis:
     image: redis
     network_mode: "host"
