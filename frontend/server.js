@@ -47,16 +47,16 @@ subs.connect();
 // });
 
 
-const server = new WebSocket.Server({ port : 3001 });
+// const server = new WebSocket.Server({ host:'http://localhost/data', port : 3000 });
 
 // Register event for client connection
-server.on('connection', (ws) => {
-	console.log('a user is connected, sending data...');
-  let table_score = getTableScore();
-  table_score.then((res)=>{
-    console.log(res);
-    ws.send(JSON.stringify(res));
-  })
+// server.on('connection', (ws) => {
+// 	console.log('a user is connected, sending data...');
+//   let table_score = getTableScore();
+//   table_score.then((res)=>{
+//     console.log(res);
+//     ws.send(JSON.stringify(res));
+//   })
   client.pSubscribe("*", (mes, chan) => {
       console.log("(front)Message:", mes);
       console.log("(front)Channel:", chan);
@@ -64,7 +64,7 @@ server.on('connection', (ws) => {
         let table_score = getTableScore();
         table_score.then((res)=>{
           console.log(res);
-          ws.send(JSON.stringify(res));
+          // ws.send(JSON.stringify(res));
         })
       }
     });
@@ -77,18 +77,27 @@ server.on('connection', (ws) => {
     publisher.publish("new_score", JSON.stringify(req.query));
     res.status(200);
   })
-	ws.on('new_score', function(channel, message){
-    console.log(message);
-		
+  router.get('/tables', function(req, res){
+    // publisher.publish("new_score", JSON.stringify(req.query));
+    let table_score = getTableScore();
+    table_score.then((resp)=>{
+      console.log(resp);
+      res.status(200).json({resp});
+    })
     
   })
-	ws.on('data', function(channel, message){
-		console.log(channel, message);
-    console.log('222');
-    ws.send('puto');
-  })
-  console.log(ws.eventNames());
-});
+	// ws.on('new_score', function(channel, message){
+  //   console.log(message);
+		
+    
+  // })
+	// ws.on('data', function(channel, message){
+	// 	console.log(channel, message);
+  //   console.log('222');
+  //   ws.send('puto');
+  // })
+//   console.log(ws.eventNames());
+// });
 
 async function getTableScore(){
   let ret = []
