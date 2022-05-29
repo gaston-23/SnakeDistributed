@@ -1,6 +1,6 @@
 
-// import { createClient } from 'redis';
-const createClient = require('redis').createClient
+import { createClient } from 'redis';
+
 require('dotenv').config();
 
 const client = createClient({

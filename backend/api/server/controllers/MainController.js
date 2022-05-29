@@ -18,31 +18,91 @@ class MainController {
     console.log("updateScoreTable");
     let ret = [];
 
-    const maxScores = await models.Score.findAll({
-      include: [{ model: models.User }],
-      distinct: true,
-      order: [["score", "DESC"]],
-      limit: 10,
-    }).then((res) => {
-      res.forEach((s) => {
-        let full = s.getResource();
-        ret.push(full);
-      });
-    });
+    // const maxScores = await models.Score.findAll({
+    //   include: [{ model: models.User }],
+    //   distinct: true,
+    //   order: [["score", "DESC"]],
+    //   limit: 10,
+    // }).then((res) => {
+    //   res.forEach((s) => {
+    //     let full = s.getResource();
+    //     ret.push(full);
+    //   });
+    // });
 
-    await redis.publish("new_table", JSON.stringify({ score_table: ret }));
+    // await publisher.publish("new_table", JSON.stringify({ score_table: ret }));
 
-    for (const i in ret){
-      const el = ret[i].attributes
-      const v = await redis.get(i);
-      console.log(v);
-      if (!v || v && JSON.parse(v) != el) {
-        await redis.set(i, JSON.stringify(el));
-      }
-    }    
+    // for (const i in ret){
+    //   const el = ret[i].attributes
+    //   const v = await redis.get(i);
+    //   console.log(v);
+    //   if (!v || v && JSON.parse(v) != el) {
+    //     await redis.set(i, JSON.stringify(el));
+    //   }
+    // }    
   }
 
   static async saveScore(data) {
+    if (!data.user || !data.score) {
+      console.log(data);
+      console.log("saveScore ERROR: Los datos ingresados no son validos!");
+      return 0;
+    }
+    let parsedScore = {
+      name: data.user,
+      score: data.score,
+    };
+    let ret = []
+    let put = false
+    console.log('parsed ',parsedScore);
+    
+    for (let i=0; i<10 ; i++){
+      console.log(i);
+      // const el = ret[i].attributes
+      const v = await redis.get(''+i);
+      console.log('value: ',v);
+      if ( v ) {
+        if(JSON.parse(v).score > parsedScore){
+          ret.push(parsedScore)
+          put = true
+        }
+        ret.push(JSON.parse(v))
+      }
+    }
+
+    if(!put){
+      ret.push(parsedScore)
+    }
+    
+    ret = ret.sort((a,b)=>{
+      if(a.score < b.score){
+        return 1
+      }else if (a.score > b.score ){
+        return -1
+      }else{
+        return 0
+      }
+    }).slice(0,10)
+    
+    for (let i=0;i<10;i++){
+      console.log(JSON.stringify(ret[i]));
+      await redis.set(''+i, JSON.stringify(ret[i]));
+    }
+      
+      
+
+  
+    // return await models.Score.create(parsedScore)
+    //   .then(() => {
+        return 1;
+      // })
+      // .catch((er) => {
+      //   console.error("saveScore ERROR: ", er.message);
+      //   return 0;
+      // });
+  }
+
+  static async saveScoreDB(data) {
     if (!data.user || !data.score) {
       console.log(data);
       console.log("saveScore ERROR: Los datos ingresados no son validos!");
@@ -53,14 +113,14 @@ class MainController {
       score: data.score,
     };
   
-    return await models.Score.create(parsedScore)
-      .then(() => {
+    // return await models.Score.create(parsedScore)
+    //   .then(() => {
         return 1;
-      })
-      .catch((er) => {
-        console.error("saveScore ERROR: ", error.message);
-        return 0;
-      });
+      // })
+      // .catch((er) => {
+      //   console.error("saveScore ERROR: ", er.message);
+      //   return 0;
+      // });
   }
 
   static async createUser(data) {
@@ -74,14 +134,14 @@ class MainController {
       password: data.password,
     };
   
-    return await models.User.create(parsedUser)
-      .then(() => {
+    // return await models.User.create(parsedUser)
+    //   .then(() => {
         return 1;
-      })
-      .catch((error) => {
-        console.error("createUser ERROR: ", error.message);
-        return 0;
-      });
+      // })
+      // .catch((error) => {
+      //   console.error("createUser ERROR: ", error.message);
+      //   return 0;
+      // });
   }
 }
 

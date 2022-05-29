@@ -26,45 +26,22 @@ const server = app.listen(port, () => {
   console.log(`Servidor corriendo en el puerto: ${port}`);
 });
 
-var io = require("socket.io")(server, {
-  //wsEngine: 'eiows', //instalar en json
-  pingInterval: 10000,
-  pingTimeout: 50000,
-  cookie: false,
-  perMessageDeflate: {
-    threshold: 3276800,
-  },
-});
 
-io.on("connection", (socket) => {
-  // console.log('a user connected');
-  socket.on("joinme", (room) => {
-    // socket.rooms = {};
-    socket.join(room);
-    io.to(room).emit("customEmit", `Bienvenido a ${room}`);
-  });
-
-  socket.on("updateThis", (data, room) => {
-    io.to(room).emit("orderUpdated", data);
-  });
-});
-
-app.socketio = io;
-
-const tester = redis.duplicate();
-const publisher = redis.duplicate();
+// const tester = redis.duplicate();
+const listener = redis.duplicate();
 redis.connect();
+console.log('Redis conectado en: ',process.env.REDIS_PATH,process.env.REDIS_PORT);
+// 
+listener.connect();
 
-publisher.connect();
-
-redis.pSubscribe("*", (mes, chan) => {
+listener.pSubscribe("*", (mes, chan) => {
   console.log("(redis)Message:", mes);
   console.log("(redis)Channel:", chan);
   if (chan == "new_score") {
     console.log("saveScore");
-    if (MainController.saveScore(JSON.parse(mes))) {
-      MainController.updateScoreTable();
-    }
+    MainController.saveScore(JSON.parse(mes))
+      // MainController.updateScoreTable();
+    
   }
   if (chan == "new_user") {
     if (MainController.createUser(JSON.parse(mes))) {
@@ -73,16 +50,19 @@ redis.pSubscribe("*", (mes, chan) => {
   }
 });
 
-tester.connect();
+// tester.connect();
 
-// tester
-//   .publish("new_user", JSON.stringify({ name: 'Gaston', password: 'toor23' }))
+// for (let i = 0; i < 6; i++) {
+//   tester
+//   .publish("new_score", JSON.stringify({ user: 'Gaston', score: 23+i*100 }))
 //   .then((res) => {
 //     console.log(res);
 //   })
 //   .catch((er) => {
 //     console.log(er);
 //   });
+// }
+
 
 // tester.pSubscribe("*", (mes, chan) => {
 //   console.log("(tester)Message:", mes);
