@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flappy-bird-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+      app: flappy-bird
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flappy-bird-front
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flappy-bird
+  template:
+    metadata:
+      labels:
+        app: flappy-bird
+    spec:
+      containers:
+      - name: flappy-bird
+        image: juanma1223/flappy-bird-sd:0.5
+        ports:
+        - containerPort: 3000
