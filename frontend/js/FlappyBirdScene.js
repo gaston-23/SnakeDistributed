@@ -6,6 +6,8 @@ class FlappyBirdScene extends Phaser.Scene {
 		super("FlappyBird");
 	}
 
+
+
 	preload(){
 		let game = this;
 
@@ -186,6 +188,7 @@ class FlappyBirdScene extends Phaser.Scene {
 	}
 
 	initGame(){
+		localStorage.setItem('called',JSON.stringify(false));
 		this.nextPipes = 0;
 		this.score = 0;
 		this.isGameOver = false;
@@ -241,6 +244,7 @@ class FlappyBirdScene extends Phaser.Scene {
 
 		this.saveScore();
 		this.isGameOver = true;
+		localStorage.setItem('setAlert', this.score);
 		this.scoreboard.visible = true;
 		this.hasGameStarted = false;
 		this.flappyBird.die();

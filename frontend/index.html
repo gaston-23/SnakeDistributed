@@ -3,11 +3,62 @@
 	<title>Flappy Bird</title>
 	<head>
 		<link rel="shortcut icon" href="assets/flappy.ico" />
-        <link rel="stylesheet" type="text/css" href="game.css">
-        <script type="text/javascript" src="phaser.min.js"></script>
-        <script type="module" src = "game.js"></script>
-    </head>
+			<link rel="stylesheet" type="text/css" href="game.css">
+			<script type="text/javascript" src="phaser.min.js"></script>
+			<script type="module" src = "game.js"></script>
+			<!-- <script type="module" src = "redis.js"></script> -->
+			
+	</head>
 	<body>
+		<script type="text/javascript">
+			const originalSetItem = localStorage.setItem;
+			
+				localStorage.setItem = function(key, value) {
+					const event = new Event('itemInserted');
+					let called = JSON.parse(localStorage.getItem('called'));
+					event.value = value; // Optional..
+					event.key = key; // Optional..
+			// console.log(called);
+
+					if (key == 'setAlert' && !called) {
+						called = true
+						localStorage.setItem('called',JSON.stringify(true));
+						document.dispatchEvent(event);
+					}
+					
+
+					originalSetItem.apply(this, arguments);
+				};
+
+				// const localStorageSetHandler = function(e) {
+				// 	var xhr = new XMLHttpRequest();
+				// 	xhr.open("POST", `http://localhost:3000/?name=${val.name}&score=${val.score}`, true);
+				// 	xhr.setRequestHeader('Content-Type', 'application/json');
+				// 	xhr.send();
+				// };
+
+				// document.addEventListener("itemInserted", localStorageSetHandler, false);
+
+		</script>
 		<div style="font-family:font1; position:absolute; left:-1000px; visibility:hidden;">.</div>
+		<div>
+			<p>Nombre de usuario: </p>
+			<input id="name"/>
+			<p>Scores</p>
+			<div class="scores_class">
+				<li id="0"></li>
+				<li id="1"></li>
+				<li id="2"></li>
+				<li id="3"></li>
+				<li id="4"></li>
+				<li id="5"></li>
+				<li id="6"></li>
+				<li id="7"></li>
+				<li id="8"></li>
+				<li id="9"></li>
+			</div>
+			
+			<script type="module" src="scores.js"></script>
+		</div>
 	</body>
 </html>

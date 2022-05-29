@@ -43,13 +43,13 @@ class MainController {
   }
 
   static async saveScore(data) {
-    if (!data.user || !data.score) {
+    if (!data.name || !data.score) {
       console.log(data);
       console.log("saveScore ERROR: Los datos ingresados no son validos!");
       return 0;
     }
     let parsedScore = {
-      name: data.user,
+      name: data.name,
       score: data.score,
     };
     let ret = []
@@ -84,9 +84,8 @@ class MainController {
       }
     }).slice(0,10)
     
-    for (let i=0;i<10;i++){
-      console.log(JSON.stringify(ret[i]));
-      await redis.set(''+i, JSON.stringify(ret[i]));
+    for (const k in ret) {
+      await redis.set(''+k, JSON.stringify(ret[k]));
     }
       
       
