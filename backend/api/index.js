@@ -27,11 +27,12 @@ const server = app.listen(port, () => {
 });
 
 
-// const tester = redis.duplicate();
+const publisher = redis.duplicate();
 const listener = redis.duplicate();
 redis.connect();
 console.log('Redis conectado en: ',process.env.REDIS_PATH,process.env.REDIS_PORT);
 // 
+publisher.connect()
 listener.connect();
 
 listener.pSubscribe("*", (mes, chan) => {
@@ -41,7 +42,7 @@ listener.pSubscribe("*", (mes, chan) => {
     console.log("saveScore");
     MainController.saveScore(JSON.parse(mes))
       // MainController.updateScoreTable();
-    
+    publisher.publish("new_table",'')
   }
   if (chan == "new_user") {
     if (MainController.createUser(JSON.parse(mes))) {
