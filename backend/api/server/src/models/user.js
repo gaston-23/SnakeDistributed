@@ -13,7 +13,9 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = function(models) {
     
-    
+    User.hasMany(models.Score, {
+      foreignKey: 'id'
+    });
   };
 
   User.prototype.getResource = function() {
