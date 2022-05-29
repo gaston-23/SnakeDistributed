@@ -1,21 +1,24 @@
 // import client from './redis.js';
 
 // window.onload = function(){
+
+  let front = "http://10.64.64.71:3000"
+  // let front = "http://localhost:3000"
   let scores = [];
   try {
-    const ws = new WebSocket("ws://localhost:3001/data");
+    // const ws = new WebSocket("ws://localhost:3001/data");
     
-    ws.onopen = function open() {
-      ws.send('getAll');
-      // sendValue({ name: 'Guest001', score: 111 })
-    };
-    ws.onmessage = ({data}) => {
-      let message =  JSON.parse(data);
-      scores = message;
-      console.log(message);
-      writeScores(scores)
-    }
-    
+    // ws.onopen = function open() {
+    //   ws.send('getAll');
+    //   // sendValue({ name: 'Guest001', score: 111 })
+    // };
+    // ws.onmessage = ({data}) => {
+    //   let message =  JSON.parse(data);
+    //   scores = message;
+    //   console.log(message);
+    //   writeScores(scores)
+    // }
+    getTable()
 
     document.addEventListener('itemInserted',(e)=>{
       console.log({ name: 'Gast404', score: e.value });
@@ -29,14 +32,31 @@
   } catch(err) {
     console.log(err);
   }
-
   var originalSetItem = localStorage.setItem; 
 
   function sendValue(val) {
     var xhr = new XMLHttpRequest();
-      xhr.open("POST", `http://localhost:3000/?name=${val.name}&score=${val.score}`, true);
+      xhr.open("POST", `${front}/?name=${val.name}&score=${val.score}`, true);
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.send();
+  }
+  function getTable(){
+    var xhr = new XMLHttpRequest();
+      xhr.open("GET", `${front}/tables`, true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send();
+      setTimeout(() => {
+        console.log(xhr);
+      console.log(xhr.status);
+      if (xhr.status == 200){
+        console.log('222');
+        let data = JSON.parse(xhr.response)
+        console.log(data);
+        let scores = data.resp;
+        writeScores(scores)
+      }
+      }, 500);
+      
   }
 // } 
 function writeScores(s) {
