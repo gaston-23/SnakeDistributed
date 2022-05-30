@@ -2,8 +2,8 @@
 
 // window.onload = function(){
 
-  let front = "http://10.64.64.71:3000"
-  // let front = "http://localhost:3000"
+  // let front = "http://10.64.64.71:3000"
+  let front = "http://localhost:3000"
   let scores = [];
   try {
     // const ws = new WebSocket("ws://localhost:3001/data");
@@ -26,7 +26,8 @@
       if (name == ''){
         name = 'null'
       }
-      sendValue({ name: name, score: e.value })
+      sendValue({ name: name, score: e.value });
+      getTable();
       // ws.send({ name: 'Gast404', score: e.value })
     },false)
   } catch(err) {
@@ -38,12 +39,19 @@
     var xhr = new XMLHttpRequest();
       xhr.open("POST", `${front}/?name=${val.name}&score=${val.score}`, true);
       xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onerror= (ev)=>{
+        console.log('oe',ev);
+      }
       xhr.send();
+      
   }
   function getTable(){
     var xhr = new XMLHttpRequest();
       xhr.open("GET", `${front}/tables`, true);
       xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onerror= (ev)=>{
+        console.log('oe',ev);
+      }
       xhr.send();
       setTimeout(() => {
         console.log(xhr);
@@ -55,8 +63,7 @@
         let scores = data.resp;
         writeScores(scores)
       }
-      }, 500);
-      
+      }, 1000);
   }
 // } 
 function writeScores(s) {

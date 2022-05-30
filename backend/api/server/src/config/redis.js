@@ -1,11 +1,11 @@
 
-import { createCluster } from 'redis';
+import { createClient } from 'redis';
 
 require('dotenv').config();
 
-const client = createCluster({
+const client = createClient({
         // url: 'redis://127.0.0.1:6379',
-        rootNodes: [ {url: process.env.REDIS_PATH }]
+        url: process.env.REDIS_PATH, 
         // port: process.env.REDIS_PORT,
     });
 
