@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: flappy-bird-front
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: flappy-bird
@@ -28,6 +28,6 @@ spec:
     spec:
       containers:
       - name: flappy-bird
-        image: juanma1223/flappy-bird-sd:0.5
+        image: juanma1223/flappy-bird-sd:0.65
         ports:
         - containerPort: 3000
