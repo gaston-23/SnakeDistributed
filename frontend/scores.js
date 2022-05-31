@@ -3,8 +3,8 @@
 
 // window.onload = function(){
 
-  // let front = "http://10.64.64.71:3000"
-  let front = "http://localhost:3000"
+let front = "http://10.64.64.71:80"
+  // let front = "http://localhost:3000"
   let scores = [];
   try {
     const ws = new WebSocket("ws://localhost:3001");
