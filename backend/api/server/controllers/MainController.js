@@ -54,13 +54,13 @@ class MainController {
     };
     let ret = []
     let put = false
-    console.log('parsed ',parsedScore);
+    // console.log('parsed ',parsedScore);
     
     for (let i=0; i<10 ; i++){
-      console.log(i);
+      // console.log(i);
       // const el = ret[i].attributes
       const v = await redis.get(''+i);
-      console.log('value: ',v);
+      // console.log('value: ',v);
       if ( v ) {
         if(JSON.parse(v).score > parsedScore){
           ret.push(parsedScore)
