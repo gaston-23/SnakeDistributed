@@ -1,70 +1,74 @@
 // import client from './redis.js';
 
+
 // window.onload = function(){
 
 let front = "http://10.64.64.71:80"
   // let front = "http://localhost:3000"
   let scores = [];
   try {
-    // const ws = new WebSocket("ws://localhost:3001/data");
+    const ws = new WebSocket("ws://localhost:3001");
     
-    // ws.onopen = function open() {
-    //   ws.send('getAll');
-    //   // sendValue({ name: 'Guest001', score: 111 })
-    // };
-    // ws.onmessage = ({data}) => {
-    //   let message =  JSON.parse(data);
-    //   scores = message;
-    //   console.log(message);
-    //   writeScores(scores)
-    // }
-    getTable()
+    ws.onopen = function open(ev) {
+      // ws.send('new_score' ,{channel: 'new_score' , name: 'Guest001', score: 111 });
+      // sendValue({ name: 'Guest001', score: 111 })
+    };
+    console.log(ws);
+
+    // ws.send('new_score' ,{channel: 'new_score' , name: 'Guest001', score: 111 });
+    ws.onmessage = ({data}) => {
+      let message =  JSON.parse(data);
+      scores = message;
+      console.log(message);
+      writeScores(scores)
+    }
+    // getTable()
 
     document.addEventListener('itemInserted',(e)=>{
-      console.log({ name: 'Gast404', score: e.value });
       let name = document.getElementById("name").value;
       if (name == ''){
         name = 'null'
       }
-      sendValue({ name: name, score: e.value });
-      getTable();
-      // ws.send({ name: 'Gast404', score: e.value })
+      // sendValue({ name: name, score: e.value });
+      console.log(ws);
+      ws.send(JSON.stringify({ name: name, score: e.value }))
     },false)
   } catch(err) {
     console.log(err);
   }
   var originalSetItem = localStorage.setItem; 
 
-  function sendValue(val) {
-    var xhr = new XMLHttpRequest();
-      xhr.open("POST", `${front}/?name=${val.name}&score=${val.score}`, true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onerror= (ev)=>{
-        console.log('oe',ev);
-      }
-      xhr.send();
+  // function sendValue(val) {
+  //   var xhr = new XMLHttpRequest();
+  //     xhr.open("POST", `${front}/?name=${val.name}&score=${val.score}`, true);
+  //     xhr.setRequestHeader('Content-Type', 'application/json');
+  //     xhr.onerror= (ev)=>{
+  //       console.log('oe',ev);
+  //     }
+  //     xhr.send();
+  //     // getTable();
+  // }
+  // function getTable(){
+  //   var xhr = new XMLHttpRequest();
+  //     xhr.open("GET", `${front}/tables`, true);
+  //     xhr.setRequestHeader('Content-Type', 'application/json');
+  //     xhr.onerror= (ev)=>{
+  //       console.log('oe',ev);
+  //     }
+  //     setTimeout(() => {
+  //       console.log(xhr);
+  //       console.log(xhr.status);
+  //       if (xhr.status == 200){
+  //         console.log('222');
+  //         let data = JSON.parse(xhr.response)
+  //         console.log(data);
+  //         let scores = data.resp;
+  //         writeScores(scores)
+  //       }
+  //     }, 1000);
+  //     xhr.send();
       
-  }
-  function getTable(){
-    var xhr = new XMLHttpRequest();
-      xhr.open("GET", `${front}/tables`, true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onerror= (ev)=>{
-        console.log('oe',ev);
-      }
-      xhr.send();
-      setTimeout(() => {
-        console.log(xhr);
-      console.log(xhr.status);
-      if (xhr.status == 200){
-        console.log('222');
-        let data = JSON.parse(xhr.response)
-        console.log(data);
-        let scores = data.resp;
-        writeScores(scores)
-      }
-      }, 1000);
-  }
+  // }
 // } 
 function writeScores(s) {
 

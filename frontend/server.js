@@ -19,6 +19,7 @@ router.get('/', function(req, res){
 });
 
 
+
 app.use('/', router);
 app.listen(process.env.PORT || 3000);
 
@@ -47,16 +48,16 @@ subs.connect();
 // });
 
 
-// const server = new WebSocket.Server({ host:'http://localhost/data', port : 3000 });
+const server = new WebSocket.Server({  port : 3001 });
 
 // Register event for client connection
-// server.on('connection', (ws) => {
-// 	console.log('a user is connected, sending data...');
-//   let table_score = getTableScore();
-//   table_score.then((res)=>{
-//     console.log(res);
-//     ws.send(JSON.stringify(res));
-//   })
+server.on('connection', (ws) => {
+	console.log('a user is connected, sending data...');
+  let table_score = getTableScore();
+  table_score.then((res)=>{
+    console.log(res);
+    ws.send(JSON.stringify(res));
+  })
   client.pSubscribe("*", (mes, chan) => {
       console.log("(front)Message:", mes);
       console.log("(front)Channel:", chan);
@@ -64,7 +65,7 @@ subs.connect();
         let table_score = getTableScore();
         table_score.then((res)=>{
           console.log(res);
-          // ws.send(JSON.stringify(res));
+          ws.send(JSON.stringify(res));
         })
       }
     });
@@ -74,11 +75,13 @@ subs.connect();
   //   ws.send(message);
   // })
   router.post('/', function(req, res){
+    // console.log(req.body);
     publisher.publish("new_score", JSON.stringify(req.query));
     res.status(200);
   })
   router.get('/tables', function(req, res){
     // publisher.publish("new_score", JSON.stringify(req.query));
+    // console.log('getTable');
     let table_score = getTableScore();
     table_score.then((resp)=>{
       console.log(resp);
@@ -86,20 +89,32 @@ subs.connect();
     })
     
   })
-	// ws.on('new_score', function(channel, message){
-  //   console.log(message);
-		
+	ws.on('new_score', function(channel, message){
+    console.log(message);
+		let table_score = getTableScore();
+        table_score.then((res)=>{
+          console.log(res);
+          ws.send(JSON.stringify(res));
+        })
     
-  // })
+  })
+  ws.on('message', function(message) {
+    // message = message.slice(0, 50); // max message length will be 50
+   
+    let ms = message.toString();
+    console.log(ms);
+    publisher.publish("new_score", ms);
+  });
 	// ws.on('data', function(channel, message){
 	// 	console.log(channel, message);
   //   console.log('222');
   //   ws.send('puto');
   // })
-//   console.log(ws.eventNames());
-// });
+  // console.log(ws.eventNames());
+});
 
 async function getTableScore(){
+  console.log('enter to getTableScore');
   let ret = []
   for (let i = 0; i < 10; i++) {
     const v = await subs.get(''+i);

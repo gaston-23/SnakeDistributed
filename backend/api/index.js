@@ -40,9 +40,11 @@ listener.pSubscribe("*", (mes, chan) => {
   console.log("(redis)Channel:", chan);
   if (chan == "new_score") {
     console.log("saveScore");
-    MainController.saveScore(JSON.parse(mes))
+    MainController.saveScore(JSON.parse(mes)).then(()=>{
+      publisher.publish("new_table",'')
+    })
       // MainController.updateScoreTable();
-    publisher.publish("new_table",'')
+    
   }
   if (chan == "new_user") {
     if (MainController.createUser(JSON.parse(mes))) {
