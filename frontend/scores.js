@@ -4,10 +4,9 @@
 // window.onload = function(){
 
 let front = "http://10.64.64.71:80"
-  // let front = "http://localhost:3000"
   let scores = [];
   try {
-    const ws = new WebSocket("ws://localhost:3001");
+    const ws = new WebSocket("ws://10.64.64.71:3001");
     
     ws.onopen = function open(ev) {
       // ws.send('new_score' ,{channel: 'new_score' , name: 'Guest001', score: 111 });

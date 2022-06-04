@@ -6,9 +6,12 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
-    protocol: TCP
+  - name: frontend
+    port: 80
     targetPort: 3000
+  - name: ws
+    port: 3001
+    targetPort: 3001
   selector:
       app: flappy-bird
 ---
@@ -28,6 +31,6 @@ spec:
     spec:
       containers:
       - name: flappy-bird
-        image: juanma1223/flappy-bird-sd:0.65
-        ports:
-        - containerPort: 3000
+        image: juanma1223/flappy-bird-sd:0.69
+        # ports:
+        # - containerPort: 3000

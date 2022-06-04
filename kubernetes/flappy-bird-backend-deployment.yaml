@@ -5,7 +5,7 @@ metadata:
   labels:
     app: flappy-bird-backend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: flappy-bird-backend
@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: flappy-bird-backend
-        image: juanma1223/flappy-bird-backend:0.61
+        image: juanma1223/flappy-bird-backend:0.64
         ports:
         - containerPort: 5000
